@@ -14,6 +14,7 @@ interface TextEditorProps {
   onChange: (value: Descendant[]) => void;
   className?: string;
   readOnly?: boolean;
+  style?: React.CSSProperties;
 }
 
 export function TextEditor({
@@ -21,6 +22,7 @@ export function TextEditor({
   onChange,
   className,
   readOnly = false,
+  style,
 }: TextEditorProps) {
   const editor = useMemo(
     () => withImages(withHistory(withReact(createEditor()))),
@@ -112,6 +114,13 @@ export function TextEditor({
           <span style={{ color: leaf.color }}>{styledChildren}</span>
         );
       }
+      if (leaf.background) {
+        styledChildren = (
+          <span style={{ backgroundColor: leaf.background }}>
+            {styledChildren}
+          </span>
+        );
+      }
 
       return <span {...attributes}>{styledChildren}</span>;
     },
@@ -119,7 +128,7 @@ export function TextEditor({
   );
 
   return (
-    <div className={cn('w-full', className)}>
+    <div className={cn('w-full', className)} style={style}>
       <Slate editor={editor} initialValue={initialValue} onChange={onChange}>
         {!readOnly && <EditorToolbar />}
         <Editable
