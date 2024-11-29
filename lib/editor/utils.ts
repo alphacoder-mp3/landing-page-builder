@@ -93,5 +93,6 @@ export const getActiveStyles = (
     italic: !!marks?.italic,
     underline: !!marks?.underline,
     color: !!marks?.color,
+    background: !!marks?.background,
   };
 };

@@ -44,6 +44,7 @@ export type FormattedText = {
   italic?: boolean;
   underline?: boolean;
   color?: string;
+  background?: string;
 };
 
 export type CustomText = FormattedText;
