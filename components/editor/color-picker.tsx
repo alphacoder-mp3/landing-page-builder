@@ -7,6 +7,9 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Slider } from '@/components/ui/slider';
+import { useState } from 'react';
 
 const colorPalettes = {
   slate: {
@@ -69,6 +72,15 @@ interface ColorPickerProps {
 }
 
 export function ColorPicker({ value, onChange }: ColorPickerProps) {
+  const [hue, setHue] = useState(0);
+  const [saturation, setSaturation] = useState(100);
+  const [lightness, setLightness] = useState(50);
+
+  const handleHSLChange = () => {
+    const color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    onChange(color);
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -79,27 +91,82 @@ export function ColorPicker({ value, onChange }: ColorPickerProps) {
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-64 p-3">
-        <div className="space-y-4">
-          {Object.entries(colorPalettes).map(([name, palette]) => (
-            <div key={name} className="space-y-2">
-              <h4 className="text-sm font-medium capitalize">{name}</h4>
-              <div className="grid grid-cols-10 gap-1">
-                {Object.entries(palette).map(([shade, color]) => (
-                  <button
-                    key={shade}
-                    className={cn(
-                      'w-5 h-5 rounded-md transition-all',
-                      value === color && 'ring-2 ring-primary ring-offset-2'
-                    )}
-                    style={{ backgroundColor: color }}
-                    onClick={() => onChange(color)}
-                  />
-                ))}
+      <PopoverContent className="w-80">
+        <Tabs defaultValue="palette">
+          <TabsList className="w-full">
+            <TabsTrigger value="palette" className="flex-1">
+              Palette
+            </TabsTrigger>
+            <TabsTrigger value="custom" className="flex-1">
+              Custom
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="palette" className="space-y-4">
+            {Object.entries(colorPalettes).map(([name, palette]) => (
+              <div key={name} className="space-y-2">
+                <h4 className="text-sm font-medium capitalize">{name}</h4>
+                <div className="grid grid-cols-10 gap-1">
+                  {Object.entries(palette).map(([shade, color]) => (
+                    <button
+                      key={shade}
+                      className={cn(
+                        'w-5 h-5 rounded-md transition-all',
+                        value === color && 'ring-2 ring-primary ring-offset-2'
+                      )}
+                      style={{ backgroundColor: color }}
+                      onClick={() => onChange(color)}
+                    />
+                  ))}
+                </div>
               </div>
+            ))}
+          </TabsContent>
+          <TabsContent value="custom" className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Hue</label>
+              <Slider
+                value={[hue]}
+                onValueChange={value => {
+                  setHue(value[0]);
+                  handleHSLChange();
+                }}
+                max={360}
+                step={1}
+                className="[&>.relative]:bg-gradient-to-r from-red-500 via-green-500 to-blue-500"
+              />
             </div>
-          ))}
-        </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Saturation</label>
+              <Slider
+                value={[saturation]}
+                onValueChange={value => {
+                  setSaturation(value[0]);
+                  handleHSLChange();
+                }}
+                max={100}
+                step={1}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Lightness</label>
+              <Slider
+                value={[lightness]}
+                onValueChange={value => {
+                  setLightness(value[0]);
+                  handleHSLChange();
+                }}
+                max={100}
+                step={1}
+              />
+            </div>
+            <div
+              className="h-20 rounded-lg"
+              style={{
+                backgroundColor: `hsl(${hue}, ${saturation}%, ${lightness}%)`,
+              }}
+            />
+          </TabsContent>
+        </Tabs>
       </PopoverContent>
     </Popover>
   );
