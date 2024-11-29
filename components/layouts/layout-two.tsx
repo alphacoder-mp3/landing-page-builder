@@ -4,6 +4,7 @@ import { Section } from '@/lib/types/editor';
 import { motion } from 'framer-motion';
 import { TextEditor } from '../editor/text-editor';
 import { BackgroundPicker } from '../editor/background-picker';
+import { ImageUpload } from '../editor/image-upload';
 import { useState } from 'react';
 
 interface LayoutTwoProps {
@@ -21,6 +22,7 @@ export function LayoutTwo({
   const featuresSection = sections.find(s => s.type === 'features');
   const footerSection = sections.find(s => s.type === 'footer');
 
+  const [heroImage, setHeroImage] = useState('');
   const [sectionBackgrounds, setSectionBackgrounds] = useState({
     hero: '',
     features: '',
@@ -65,13 +67,20 @@ export function LayoutTwo({
                 />
               </div>
               <div className="relative aspect-square rounded-xl overflow-hidden bg-muted">
-                <picture>
-                  <img
-                    src="https://images.unsplash.com/photo-1498050108023-c5249f4df085"
-                    alt="Hero"
-                    className="w-full h-full object-cover"
+                {!isPreview ? (
+                  <ImageUpload
+                    onImageSelect={setHeroImage}
+                    className="h-full"
                   />
-                </picture>
+                ) : heroImage ? (
+                  <picture>
+                    <img
+                      src={heroImage}
+                      alt="Hero"
+                      className="w-full h-full object-cover"
+                    />
+                  </picture>
+                ) : null}
               </div>
             </div>
           </div>
@@ -123,7 +132,7 @@ export function LayoutTwo({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           className="relative py-16"
-          style={{ background: sectionBackgrounds.footer }}
+          style={{ background: sectionBackgrounds.footer || '#111827' }}
         >
           {!isPreview && (
             <div className="absolute top-4 right-4">
@@ -139,8 +148,7 @@ export function LayoutTwo({
               initialValue={footerSection.content}
               onChange={content => onSectionUpdate?.(footerSection.id, content)}
               readOnly={isPreview}
-              className="prose max-w-none"
-              style={{ color: sectionBackgrounds.footer ? '#fff' : undefined }}
+              className="prose prose-invert max-w-none"
             />
           </div>
         </motion.footer>
