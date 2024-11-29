@@ -28,6 +28,22 @@ const gradients = [
     name: 'Lavender',
     colors: ['#a855f7', '#ec4899', '#6366f1'],
   },
+  {
+    name: 'Golden Hour',
+    colors: ['#f59e0b', '#d97706', '#b45309'],
+  },
+  {
+    name: 'Northern Lights',
+    colors: ['#06b6d4', '#0ea5e9', '#6366f1'],
+  },
+  {
+    name: 'Cherry Blossom',
+    colors: ['#ec4899', '#db2777', '#be185d'],
+  },
+  {
+    name: 'Emerald Dream',
+    colors: ['#059669', '#10b981', '#34d399'],
+  },
 ];
 
 const solidColors = [
@@ -124,9 +140,9 @@ export function BackgroundPicker({
                   key={gradient.name}
                   className="h-20 rounded-lg transition-transform hover:scale-105"
                   style={{
-                    background: `linear-gradient(to right, ${gradient.colors.join(
-                      ', '
-                    )})`,
+                    background: `linear-gradient(to right, ${gradient.colors
+                      .map(color => `${color} ${opacity}%`)
+                      .join(', ')})`,
                   }}
                   onClick={() => handleGradientClick(gradient)}
                 />
