@@ -66,11 +66,20 @@ export function BackgroundPicker({
   onChange,
   type = 'text',
 }: BackgroundPickerProps) {
-  const [opacity, setOpacity] = useState(50);
+  const [opacity, setOpacity] = useState(100);
+
+  const createGradient = (colors: string[], opacity: number) => {
+    console.log({ opacity }); // for future purpose use opacity
+    return `linear-gradient(to right, ${colors
+      .map((color, index) => {
+        const position = (index / (colors.length - 1)) * 100;
+        return `${color} ${position}%`;
+      })
+      .join(', ')})`;
+  };
 
   const handleGradientClick = (gradient: (typeof gradients)[0]) => {
-    const { colors } = gradient;
-    const gradientString = `linear-gradient(to right, ${colors.join(', ')})`;
+    const gradientString = createGradient(gradient.colors, opacity);
     onChange(gradientString);
   };
 
@@ -79,8 +88,9 @@ export function BackgroundPicker({
     setOpacity(newOpacity);
 
     if (value?.includes('linear-gradient')) {
-      const gradientWithOpacity = value.replace(')', ` / ${newOpacity}%)`);
-      onChange(gradientWithOpacity);
+      const colors = value.match(/#[a-fA-F0-9]{6}/g) || [];
+      const gradientString = createGradient(colors, newOpacity);
+      onChange(gradientString);
     }
   };
 
@@ -140,9 +150,7 @@ export function BackgroundPicker({
                   key={gradient.name}
                   className="h-20 rounded-lg transition-transform hover:scale-105"
                   style={{
-                    background: `linear-gradient(to right, ${gradient.colors
-                      .map(color => `${color} ${opacity}%`)
-                      .join(', ')})`,
+                    background: createGradient(gradient.colors, opacity),
                   }}
                   onClick={() => handleGradientClick(gradient)}
                 />
