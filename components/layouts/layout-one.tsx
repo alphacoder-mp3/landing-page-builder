@@ -7,6 +7,7 @@ import { ImageUpload } from '../editor/image-upload';
 import { Button } from '../ui/button';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
+import { BackgroundPicker } from '../editor/background-picker';
 
 interface LayoutOneProps {
   sections: Section[];
@@ -25,6 +26,18 @@ export function LayoutOne({
 
   const [heroImage, setHeroImage] = useState<string>('');
   const [aboutImage, setAboutImage] = useState<string>('');
+  const [sectionBackgrounds, setSectionBackgrounds] = useState({
+    hero: '',
+    features: '',
+    about: '',
+  });
+
+  const updateBackground = (
+    section: keyof typeof sectionBackgrounds,
+    value: string
+  ) => {
+    setSectionBackgrounds(prev => ({ ...prev, [section]: value }));
+  };
 
   return (
     <div className="min-h-screen">
@@ -32,13 +45,30 @@ export function LayoutOne({
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative min-h-[80vh] flex items-center justify-center bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5"
+          className="relative min-h-[80vh] flex items-center justify-center"
           style={{
-            backgroundImage: heroImage ? `url(${heroImage})` : undefined,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            ...(heroImage
+              ? {
+                  backgroundImage: `url(${heroImage})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }
+              : {
+                  background:
+                    sectionBackgrounds.hero ||
+                    'linear-gradient(to right, var(--primary-5), var(--primary-10), var(--primary-5))',
+                }),
           }}
         >
+          {!isPreview && (
+            <div className="absolute top-4 right-4">
+              <BackgroundPicker
+                value={sectionBackgrounds.hero}
+                onChange={value => updateBackground('hero', value)}
+                type="section"
+              />
+            </div>
+          )}
           <div className="absolute inset-0 pointer-events-none bg-[url('/grid.svg')] opacity-10" />
           <div className="container mx-auto max-w-6xl px-4 py-20">
             <div className="max-w-3xl mx-auto text-center">
@@ -66,8 +96,18 @@ export function LayoutOne({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="py-24 px-4"
+          className="relative py-24 px-4"
+          style={{ background: sectionBackgrounds.features }}
         >
+          {!isPreview && (
+            <div className="absolute top-4 right-4">
+              <BackgroundPicker
+                value={sectionBackgrounds.features}
+                onChange={value => updateBackground('features', value)}
+                type="section"
+              />
+            </div>
+          )}
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-12">
               {Array.from({ length: 2 }).map((_, index) => (
@@ -107,8 +147,18 @@ export function LayoutOne({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="py-24 px-4 bg-muted/50"
+          className="relative py-24 px-4"
+          style={{ background: sectionBackgrounds.about || 'bg-muted/50' }}
         >
+          {!isPreview && (
+            <div className="absolute top-4 right-4">
+              <BackgroundPicker
+                value={sectionBackgrounds.about}
+                onChange={value => updateBackground('about', value)}
+                type="section"
+              />
+            </div>
+          )}
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="relative aspect-square rounded-xl overflow-hidden bg-muted">
