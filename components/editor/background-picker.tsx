@@ -9,69 +9,126 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Slider } from '@/components/ui/slider';
 import { useState } from 'react';
+import { cn } from '@/lib/utils';
 
 const gradients = [
   {
     name: 'Sunset',
-    from: 'from-orange-500',
-    via: 'via-pink-500',
-    to: 'to-purple-500',
+    colors: ['#f97316', '#ec4899', '#a855f7'],
   },
   {
     name: 'Ocean',
-    from: 'from-blue-500',
-    via: 'via-teal-500',
-    to: 'to-emerald-500',
+    colors: ['#3b82f6', '#14b8a6', '#10b981'],
   },
   {
     name: 'Forest',
-    from: 'from-green-500',
-    via: 'via-emerald-500',
-    to: 'to-teal-500',
+    colors: ['#22c55e', '#10b981', '#14b8a6'],
   },
   {
     name: 'Lavender',
-    from: 'from-purple-500',
-    via: 'via-pink-500',
-    to: 'to-indigo-500',
+    colors: ['#a855f7', '#ec4899', '#6366f1'],
   },
 ];
 
+const solidColors = [
+  { name: 'Slate', value: '#64748b' },
+  { name: 'Red', value: '#ef4444' },
+  { name: 'Blue', value: '#3b82f6' },
+  { name: 'Green', value: '#22c55e' },
+  { name: 'Purple', value: '#a855f7' },
+  { name: 'Yellow', value: '#eab308' },
+];
+
 interface BackgroundPickerProps {
+  value?: string;
   onChange: (background: string) => void;
+  type?: 'text' | 'section';
 }
 
-export function BackgroundPicker({ onChange }: BackgroundPickerProps) {
+export function BackgroundPicker({
+  value,
+  onChange,
+  type = 'text',
+}: BackgroundPickerProps) {
   const [opacity, setOpacity] = useState(50);
+
+  const handleGradientClick = (gradient: (typeof gradients)[0]) => {
+    const { colors } = gradient;
+    const gradientString = `linear-gradient(to right, ${colors.join(', ')})`;
+    onChange(gradientString);
+  };
+
+  const handleOpacityChange = (values: number[]) => {
+    const newOpacity = values[0];
+    setOpacity(newOpacity);
+
+    if (value?.includes('linear-gradient')) {
+      const gradientWithOpacity = value.replace(')', ` / ${newOpacity}%)`);
+      onChange(gradientWithOpacity);
+    }
+  };
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm">
-          Background
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn('w-8 h-8 p-0', type === 'section' && 'w-auto px-3')}
+        >
+          {type === 'text' ? (
+            <div
+              className="w-4 h-4 rounded-full border"
+              style={{ backgroundColor: value }}
+            />
+          ) : (
+            <>
+              <div
+                className="w-4 h-4 rounded-full border mr-2"
+                style={{ background: value }}
+              />
+              Background
+            </>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
-        <Tabs defaultValue="gradient">
+        <Tabs defaultValue="solid">
           <TabsList className="w-full">
-            <TabsTrigger value="gradient" className="flex-1">
-              Gradient
-            </TabsTrigger>
             <TabsTrigger value="solid" className="flex-1">
               Solid
             </TabsTrigger>
+            <TabsTrigger value="gradient" className="flex-1">
+              Gradient
+            </TabsTrigger>
           </TabsList>
+          <TabsContent value="solid" className="space-y-4">
+            <div className="grid grid-cols-6 gap-2">
+              {solidColors.map(color => (
+                <button
+                  key={color.name}
+                  className={cn(
+                    'w-8 h-8 rounded-md transition-transform hover:scale-105',
+                    value === color.value && 'ring-2 ring-primary ring-offset-2'
+                  )}
+                  style={{ backgroundColor: color.value }}
+                  onClick={() => onChange(color.value)}
+                />
+              ))}
+            </div>
+          </TabsContent>
           <TabsContent value="gradient" className="space-y-4">
             <div className="grid grid-cols-2 gap-2">
               {gradients.map(gradient => (
                 <button
                   key={gradient.name}
-                  className={`h-20 rounded-lg bg-gradient-to-r ${gradient.from} ${gradient.via} ${gradient.to} transition-transform hover:scale-105`}
-                  onClick={() =>
-                    onChange(
-                      `bg-gradient-to-r ${gradient.from} ${gradient.via} ${gradient.to}`
-                    )
-                  }
+                  className="h-20 rounded-lg transition-transform hover:scale-105"
+                  style={{
+                    background: `linear-gradient(to right, ${gradient.colors.join(
+                      ', '
+                    )})`,
+                  }}
+                  onClick={() => handleGradientClick(gradient)}
                 />
               ))}
             </div>
@@ -79,24 +136,11 @@ export function BackgroundPicker({ onChange }: BackgroundPickerProps) {
               <label className="text-sm font-medium">Opacity</label>
               <Slider
                 value={[opacity]}
-                onValueChange={value => setOpacity(value[0])}
+                onValueChange={handleOpacityChange}
                 min={0}
                 max={100}
                 step={1}
               />
-            </div>
-          </TabsContent>
-          <TabsContent value="solid" className="space-y-4">
-            <div className="grid grid-cols-4 gap-2">
-              {['bg-primary', 'bg-secondary', 'bg-accent', 'bg-muted'].map(
-                color => (
-                  <button
-                    key={color}
-                    className={`h-10 rounded-lg ${color} transition-transform hover:scale-105`}
-                    onClick={() => onChange(color)}
-                  />
-                )
-              )}
             </div>
           </TabsContent>
         </Tabs>
