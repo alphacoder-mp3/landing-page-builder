@@ -7,7 +7,6 @@ import { ImageUpload } from '../editor/image-upload';
 import { Button } from '../ui/button';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
-import Image from 'next/image';
 
 interface LayoutOneProps {
   sections: Section[];
@@ -120,13 +119,15 @@ export function LayoutOne({
                   />
                 ) : (
                   aboutImage && (
-                    <Image
-                      src={aboutImage}
-                      alt="About section"
-                      className="w-full h-full object-cover"
-                      height={500}
-                      width={500}
-                    />
+                    <picture>
+                      <img
+                        src={aboutImage}
+                        alt="About section"
+                        className="w-full h-full object-cover"
+                        height={500}
+                        width={500}
+                      />
+                    </picture>
                   )
                 )}
               </div>

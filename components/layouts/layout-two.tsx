@@ -1,7 +1,6 @@
 import { Section } from '@/lib/types/editor';
 import { motion } from 'framer-motion';
 import { TextEditor } from '../editor/text-editor';
-import Image from 'next/image';
 
 interface LayoutTwoProps {
   sections: Section[];
@@ -34,13 +33,15 @@ export function LayoutTwo({
               className="prose prose-lg max-w-none"
             />
             <div className="bg-muted rounded-lg p-8">
-              <Image
-                src="https://images.unsplash.com/photo-1498050108023-c5249f4df085"
-                alt="Hero"
-                className="rounded-lg shadow-lg"
-                height={100}
-                width={100}
-              />
+              <picture>
+                <img
+                  src="https://images.unsplash.com/photo-1498050108023-c5249f4df085"
+                  alt="Hero"
+                  className="rounded-lg shadow-lg"
+                  height={100}
+                  width={100}
+                />
+              </picture>
             </div>
           </div>
         </motion.section>

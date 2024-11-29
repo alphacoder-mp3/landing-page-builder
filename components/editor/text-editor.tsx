@@ -8,7 +8,6 @@ import { EditorToolbar } from './editor-toolbar';
 import { cn } from '@/lib/utils';
 import { RenderElementProps, RenderLeafProps } from '@/lib/types/slate';
 import { withImages } from '@/lib/editor/utils';
-import Image from 'next/image';
 
 interface TextEditorProps {
   initialValue: Descendant[];
@@ -67,14 +66,20 @@ export function TextEditor({
           );
         case 'image':
           return (
-            <div {...attributes} contentEditable={false} className="my-4">
-              <Image
-                src={element.url}
-                alt=""
-                className="rounded-lg max-w-full"
-                height={400}
-                width={400}
-              />
+            <div
+              {...attributes}
+              contentEditable={false}
+              className="my-4 flex justify-center"
+            >
+              <picture>
+                <img
+                  src={element.url}
+                  alt=""
+                  className="rounded-lg max-w-full"
+                  height={400}
+                  width={400}
+                />
+              </picture>
               {children}
             </div>
           );
