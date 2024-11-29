@@ -24,8 +24,11 @@ export function LayoutOne({
   const featuresSection = sections.find(s => s.type === 'features');
   const aboutSection = sections.find(s => s.type === 'about');
 
-  const [heroImage, setHeroImage] = useState<string>('');
-  const [aboutImage, setAboutImage] = useState<string>('');
+  const [images, setImages] = useState<Record<string, string>>({
+    hero: '',
+    about: '',
+  });
+
   const [sectionBackgrounds, setSectionBackgrounds] = useState({
     hero: '',
     features: '',
@@ -39,6 +42,10 @@ export function LayoutOne({
     setSectionBackgrounds(prev => ({ ...prev, [section]: value }));
   };
 
+  const handleImageUpload = (section: keyof typeof images, url: string) => {
+    setImages(prev => ({ ...prev, [section]: url }));
+  };
+
   return (
     <div className="min-h-screen">
       {heroSection && (
@@ -47,9 +54,9 @@ export function LayoutOne({
           animate={{ opacity: 1, y: 0 }}
           className="relative min-h-[80vh] flex items-center justify-center"
           style={{
-            ...(heroImage
+            ...(images.hero
               ? {
-                  backgroundImage: `url(${heroImage})`,
+                  backgroundImage: `url(${images.hero})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                 }
@@ -81,7 +88,7 @@ export function LayoutOne({
               {!isPreview && (
                 <div className="mt-8">
                   <ImageUpload
-                    onImageSelect={url => setHeroImage(url)}
+                    onImageSelect={url => handleImageUpload('hero', url)}
                     className="max-w-md mx-auto"
                   />
                 </div>
@@ -164,22 +171,20 @@ export function LayoutOne({
               <div className="relative aspect-square rounded-xl overflow-hidden bg-muted">
                 {!isPreview ? (
                   <ImageUpload
-                    onImageSelect={url => setAboutImage(url)}
+                    onImageSelect={url => handleImageUpload('about', url)}
                     className="h-full"
                   />
-                ) : (
-                  aboutImage && (
-                    <picture>
-                      <img
-                        src={aboutImage}
-                        alt="About section"
-                        className="w-full h-full object-cover"
-                        height={500}
-                        width={500}
-                      />
-                    </picture>
-                  )
-                )}
+                ) : images.about ? (
+                  <picture>
+                    <img
+                      src={images.about}
+                      alt="About section"
+                      className="w-full h-full object-cover"
+                      height={500}
+                      width={500}
+                    />
+                  </picture>
+                ) : null}
               </div>
               <div>
                 <TextEditor
