@@ -4,6 +4,14 @@
 
 This Landing Page Builder is a sophisticated web application that allows users to create and customize landing pages with inline content editing capabilities. The project focuses on providing an intuitive, flexible interface for building responsive landing pages with rich text editing features.
 
+## 🌐 Live Demo
+
+**Deployed Link:** [https://landing-page-builder-flax.vercel.app/](https://landing-page-builder-flax.vercel.app/)
+
+### Screenshot
+
+![Landing Page Builder Screenshot](https://res.cloudinary.com/dhyds1gcy/image/upload/f_auto,q_auto/wckqhtlrlzayjiegtjcf)
+
 ## 📋 Project Features
 
 - Two predefined responsive layouts
