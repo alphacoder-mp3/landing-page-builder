@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background">
       <nav className="border-b">
-        <div className="container mx-auto max-w-6xl px-4 py-4 flex items-center justify-between">
+        <div className="container mx-auto max-w-6xl px-4 py-4 flex items-center justify-between flex-col gap-4">
           <h1 className="text-2xl font-bold">Landing Page Builder</h1>
           <div className="flex items-center gap-4">
             <LayoutSelector />
